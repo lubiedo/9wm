@@ -35,6 +35,15 @@ mainloop(int shape_event)
 #endif
 				fprintf(stderr, "9wm: unknown ev.type %d\n", ev.type);
 			break;
+                case KeyPress:
+                        if (ev.xkey.keycode == XKeysymToKeycode(dpy, XK_BackSpace)) {
+			  fprintf(stderr, "9wm: Ctrl+Alt+Backspace received. Quitting.\n");
+                          cleanup();
+                          exit(0);
+                        }
+                        break;
+                case KeyRelease:
+                        break;
 		case ButtonPress:
 			button(&ev.xbutton);
 			break;

@@ -123,9 +123,12 @@ extern Atom 		wm_take_focus;
 extern Atom 		wm_colormaps;
 extern Atom		utf8_string;
 extern Atom		wm_moveresize;
+extern Atom		client_list;
 extern Atom		active_window;
 extern Atom		net_wm_state;
 extern Atom		net_wm_state_fullscreen;
+extern Atom		net_num_desktops;
+extern Atom		net_cur_desktop;
 
 /* client.c */
 extern Client		*clients;

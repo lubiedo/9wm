@@ -52,6 +52,10 @@ It's up to you to write an "9wm-mm" program and put it in your path somewhere,
 if you want to use this for something.
 I have mine run "google-chrome-stable --show-app-list".
 
+## Additions
+* Ctrl + Alt + BackSpace: To cleanup and quit 9wm.
+* Window properties added: _NET_NUMBER_OF_DESKTOPS, _NET_CURRENT_DESKTOP,
+  _NET_ACTIVE_WINDOW, _NET_CLIENT_LIST.
 
 What if I find a bug?
 =====================

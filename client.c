@@ -7,6 +7,7 @@
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <X11/Xatom.h>
 #include "dat.h"
 #include "fns.h"
 
@@ -24,9 +25,14 @@ setactive(Client * c, int on)
 		XSetInputFocus(dpy, c->window, RevertToPointerRoot, timestamp());
 		if (c->proto & Ptakefocus)
 			sendcmessage(c->window, wm_protocols, wm_take_focus, 0);
-		cmapfocus(c);
-	} else
+                XChangeProperty(dpy, c->screen->root, active_window, XA_WINDOW,
+                    32, PropModeReplace, (unsigned char *) &(c->window), 2);
+
+                cmapfocus(c);
+	} else {
+                XDeleteProperty(dpy, c->screen->root, active_window);
 		XGrabButton(dpy, AnyButton, AnyModifier, c->parent, False, ButtonMask, GrabModeAsync, GrabModeSync, None, None);
+        }
 	draw_border(c, on);
 }
 
@@ -63,6 +69,7 @@ active(Client * c)
 	while (c->revert && !normal(c->revert))
 		c->revert = c->revert->revert;
 	current = c;
+
 #ifdef	DEBUG
 	if (debug)
 		dump_revert();
@@ -85,6 +92,7 @@ nofocus(void)
 				return;
 			}
 		cmapnofocus(current->screen);
+                XDeleteProperty(dpy, current->screen->root, active_window);
 		/*
 		 * if no candidates to revert to, fall through 
 		 */
@@ -200,6 +208,23 @@ rmclient(Client * c)
 		XFree((char *) c->class);
 	memset(c, 0, sizeof(Client));	/* paranoia */
 	free(c);
+
+        update_client_list(current);
+}
+
+void
+update_client_list(Client *c)
+{
+  Client *cc;
+
+  /* delete the property using active client */
+  XDeleteProperty(dpy, c->screen->root, client_list);
+
+  for (cc = clients; cc != NULL; cc = cc->next) {
+    XChangeProperty(dpy, c->screen->root, client_list, XA_WINDOW, 32,
+        PropModeAppend, (unsigned char *)&(cc->window), 1);
+  }
+
 }
 
 #ifdef	DEBUG

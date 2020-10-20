@@ -50,9 +50,12 @@ Atom wm_delete;
 Atom wm_take_focus;
 Atom wm_colormaps;
 Atom wm_moveresize;
+Atom net_num_desktops;
+Atom net_cur_desktop;
 Atom net_wm_state;
 Atom net_wm_state_fullscreen;
 Atom active_window;
+Atom client_list;
 Atom utf8_string;
 Atom _9wm_running;
 Atom _9wm_hold_mode;
@@ -200,7 +203,10 @@ main(int argc, char *argv[])
 	wm_take_focus = XInternAtom(dpy, "WM_TAKE_FOCUS", False);
 	wm_colormaps = XInternAtom(dpy, "WM_COLORMAP_WINDOWS", False);
 	wm_moveresize = XInternAtom(dpy, "_NET_WM_MOVERESIZE", False);
+	client_list = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
 	active_window = XInternAtom(dpy, "_NET_ACTIVE_WINDOW", False);
+	net_num_desktops = XInternAtom(dpy, "_NET_NUMBER_OF_DESKTOPS",False);
+	net_cur_desktop = XInternAtom(dpy, "_NET_CURRENT_DESKTOP",False);
 	net_wm_state = XInternAtom(dpy, "_NET_WM_STATE",False);
 	net_wm_state_fullscreen = XInternAtom(dpy, "_NET_WM_STATE_FULLSCREEN", False);
 	utf8_string = XInternAtom(dpy, "UTF8_STRING", False);
@@ -235,8 +241,18 @@ main(int argc, char *argv[])
 	num_screens = ScreenCount(dpy);
 	screens = (ScreenInfo *) malloc(sizeof(ScreenInfo) * num_screens);
 
-	for (i = 0; i < num_screens; i++)
+	for (i = 0; i < num_screens; i++) {
+                long n = 1;
+
 		initscreen(&screens[i], i);
+                /* set number of desktops and current desktop to 1 */
+                XChangeProperty(dpy, screens[i].root, net_num_desktops,
+                    XA_CARDINAL, 32, PropModeReplace, (unsigned char *)&n, 1);
+                n--;
+                XChangeProperty(dpy, screens[i].root, net_cur_desktop,
+                    XA_CARDINAL, 32, PropModeReplace,
+                    (unsigned char *)&n, 1);
+        }
 
 	/*
 	 * set selection so that 9term knows we're running 
@@ -251,7 +267,6 @@ main(int argc, char *argv[])
 
 	for (i = 0; i < num_screens; i++)
 		scanwins(&screens[i]);
-
 	mainloop(shape_event);
 
 	return 0;
@@ -321,10 +336,12 @@ initscreen(ScreenInfo * s, int i)
 
 	attr.cursor = s->arrow;
 	attr.event_mask = SubstructureRedirectMask
-	    | SubstructureNotifyMask | ColormapChangeMask | ButtonPressMask | ButtonReleaseMask | PropertyChangeMask;
+	    | SubstructureNotifyMask | ColormapChangeMask | KeyPress | KeyRelease | ButtonPressMask | ButtonReleaseMask | PropertyChangeMask;
 	mask = CWCursor | CWEventMask;
 	XChangeWindowAttributes(dpy, s->root, mask, &attr);
 	XSync(dpy, False);
+
+        XGrabKey(dpy, XKeysymToKeycode(dpy, XK_BackSpace), ControlMask|Mod1Mask, s->root, True, GrabModeAsync, GrabModeAsync);
 
 	s->menuwin = XCreateSimpleWindow(dpy, s->root, 0, 0, 1, 1, 1, s->black, s->white);
 }

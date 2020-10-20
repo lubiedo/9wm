@@ -145,6 +145,9 @@ manage(Client * c, int mapped)
 	}
 	if (current && (current != c))
 		cmapfocus(current);
+
+        update_client_list(c);
+
 	c->init = 1;
 	return 1;
 }
