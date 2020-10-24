@@ -73,7 +73,7 @@ void	nofocus();
 void	top();
 Client	*getclient();
 void	rmclient();
-void    update_client_list(Client *c);
+void    update_client_list();
 void	dump_revert();
 void	dump_clients();
 

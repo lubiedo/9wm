@@ -209,22 +209,20 @@ rmclient(Client * c)
 	memset(c, 0, sizeof(Client));	/* paranoia */
 	free(c);
 
-        update_client_list(current);
+        update_client_list();
 }
 
 void
-update_client_list(Client *c)
+update_client_list()
 {
-  Client *cc;
+  Client *cc = clients;
 
   /* delete the property using active client */
-  XDeleteProperty(dpy, c->screen->root, client_list);
+  XDeleteProperty(dpy, cc->screen->root, client_list);
 
-  for (cc = clients; cc != NULL; cc = cc->next) {
-    XChangeProperty(dpy, c->screen->root, client_list, XA_WINDOW, 32,
+  for (; cc; cc = cc->next)
+    XChangeProperty(dpy, cc->screen->root, client_list, XA_WINDOW, 32,
         PropModeAppend, (unsigned char *)&(cc->window), 1);
-  }
-
 }
 
 #ifdef	DEBUG
