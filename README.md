@@ -56,6 +56,8 @@ I have mine run "google-chrome-stable --show-app-list".
 * Ctrl + Alt + BackSpace: To cleanup and quit 9wm.
 * Window properties added: _NET_NUMBER_OF_DESKTOPS, _NET_CURRENT_DESKTOP,
   _NET_ACTIVE_WINDOW, _NET_CLIENT_LIST.
+* Font update.
+* Add support for `st` when calling for a new terminal.
 
 What if I find a bug?
 =====================
