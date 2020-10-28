@@ -13,6 +13,12 @@
 #include "dat.h"
 #include "fns.h"
 
+#ifdef USE_ST
+#define TERM  "st"
+#else
+#define TERM  "xterm"
+#endif
+
 Client *hiddenc[MAXHIDDEN];
 
 int numhidden;
@@ -117,8 +123,8 @@ spawn(ScreenInfo * s, char *prog)
 			fprintf(stderr, "9wm: exec %s", shell);
 			perror(" failed");
 		}
-		execlp("xterm", "xterm", NULL);
-		perror("9wm: exec xterm failed");
+		execlp(TERM, TERM, NULL);
+		perror("9wm: exec "TERM" failed");
 		exit(1);
 	}
 }

@@ -61,7 +61,7 @@ Atom _9wm_running;
 Atom _9wm_hold_mode;
 
 char *fontlist[] = {
-	"-*-dejavu sans-bold-r-*-*-14-*-*-*-p-*-*-*",
+        "-*-dejavu sans-bold-r-*-*-14-*-*-*-m-*-*-*",
 	"-adobe-helvetica-bold-r-*-*-14-*-*-*-p-*-*-*",
 	"lucm.latin1.9",
 	"blit",
@@ -226,8 +226,12 @@ main(int argc, char *argv[])
 				break;
 			}
 			font = XLoadQueryFont(dpy, fname);
-			if (font != 0)
+			if (font != 0) {
+#ifndef  DEBUG
+                                 fprintf(stderr, "9wm: font '%s' loaded\n", fname);
+#endif
 				break;
+                        }
 		}
 	}
 	if (border) {
@@ -492,3 +496,4 @@ cleanup(void)
 		cmapnofocus(&screens[i]);
 	XCloseDisplay(dpy);
 }
+

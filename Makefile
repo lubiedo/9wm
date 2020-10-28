@@ -1,4 +1,5 @@
-CFLAGS += -DSHAPE -DCOLOR -Wall -pedantic -ansi -D_XOPEN_SOURCE
+CFLAGS += -DSHAPE -DCOLOR -Wall -pedantic -ansi -D_XOPEN_SOURCE \
+	  $(shell which st &>/dev/null && echo -n "-DUSE_ST")
 LDLIBS = -lXext -lX11
 PREFIX ?= /usr
 BIN = $(DESTDIR)$(PREFIX)/bin
