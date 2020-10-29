@@ -58,6 +58,7 @@ I have mine run "google-chrome-stable --show-app-list".
   _NET_ACTIVE_WINDOW, _NET_CLIENT_LIST.
 * Font update.
 * Add support for `st` when calling for a new terminal.
+* rio's original cursor when using default cursor configuration.
 
 What if I find a bug?
 =====================
